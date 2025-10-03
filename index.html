@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crimson Eclipse with Messages</title>
+  <title>A Gift: Crimson Horizon of Love</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      /* Deep space background with a hint of blue-black */
-      background: radial-gradient(ellipse at bottom, #09091a 0%, #000000 100%); 
+      /* Background: Deep twilight blue fading to black at the top */
+      background: linear-gradient(to top, #080a20 50%, #000000 100%); 
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -17,133 +17,159 @@
       position: relative;
     }
 
-    /* --- THE MOON: Eclipse Effect --- */
-    .moon-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 400px; /* Large container to hold the glow */
-      height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1;
+    /* --- HORIZON EFFECT (Misty Foreground) --- */
+    .horizon {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 40vh; 
+        /* Creates a misty, dark ground effect */
+        background: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 30%, transparent 80%);
+        z-index: 5;
+        pointer-events: none;
     }
 
+    /* --- THE BLOOD MOON: Massive and Low --- */
     .moon {
-      width: 250px; 
-      height: 250px;
+      width: 450px; 
+      height: 450px;
       border-radius: 50%;
       
-      /* Deeper, velvety red core */
-      background: radial-gradient(circle at 50% 50%, #4f0000 0%, #2a0000 70%); 
+      /* Deeper, ominous red core */
+      background: radial-gradient(circle at 50% 50%, #5c0000 0%, #300000 70%); 
       
-      /* Realistic Eclipse Glow (Corona) - Intense but contained */
+      /* Atmospheric Glow */
       box-shadow: 
-        /* Deep red inner glow (the light source) */
-        0 0 40px 15px rgba(139, 0, 0, 0.9), 
-        /* Outer, atmospheric ring (the corona) */
-        0 0 150px 75px rgba(255, 69, 0, 0.2), 
-        /* Very wide, subtle halo */
-        0 0 300px 150px rgba(255, 69, 0, 0.05); 
-        
-      z-index: 2; /* Sits above the container and stars */
-      animation: pulseGlow 8s infinite alternate ease-in-out;
+        0 0 80px 40px rgba(100, 0, 0, 0.7), 
+        0 0 250px 125px rgba(200, 50, 50, 0.3), 
+        0 0 500px 250px rgba(255, 100, 100, 0.1); 
+      
+      position: absolute;
+      bottom: -150px; 
+      z-index: 2; 
+      animation: pulseGlow 10s infinite alternate ease-in-out;
+      
+      /* New: Subtle heart-shaped inner shadow for a hidden love note */
+      text-align: center;
+      line-height: 450px;
     }
     
-    /* Subtle glow pulse */
+    /* Animation for the moon */
     @keyframes pulseGlow {
-        from { box-shadow: 0 0 40px 15px rgba(139, 0, 0, 0.9), 0 0 150px 75px rgba(255, 69, 0, 0.2); }
-        to { box-shadow: 0 0 50px 20px rgba(160, 0, 0, 1), 0 0 170px 85px rgba(255, 80, 0, 0.3); }
+        from { transform: scale(1); opacity: 0.95; }
+        to { transform: scale(1.02); opacity: 1; }
     }
 
 
     /* --- THE STARS AND TOOLTIPS --- */
     .star {
       position: absolute;
-      width: 3px; 
-      height: 3px;
-      background: #fff;
-      border-radius: 50%;
-      animation: twinkle 2.5s infinite ease-in-out; 
+      width: 0; /* Star size will be defined by border width (a CSS trick) */
+      height: 0;
       cursor: default;
-      box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.8);
-      z-index: 3; /* Always on top */
+      z-index: 3;
+      
+      /* NEW: CSS heart shape */
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid #ff70a6; /* Pink-ish love color */
+      border-left: 5px solid transparent;
+      transform: rotate(-45deg); /* Base rotation */
+      animation: heartTwinkle 3s infinite ease-in-out; 
     }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.3; transform: scale(1.6); }
+    .star::before, .star::after {
+        content: "";
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #ff70a6;
     }
-
-    /* Tooltip: Clean, minimalist message */
+    .star::before {
+        top: -2.5px;
+        left: -5px;
+    }
     .star::after {
+        top: -2.5px;
+        left: 0px;
+    }
+
+    /* Animation for the heart twinkle */
+    @keyframes heartTwinkle {
+      0%, 100% { opacity: 1; transform: rotate(-45deg) scale(1); box-shadow: 0 0 10px rgba(255, 112, 166, 0.7); }
+      50% { opacity: 0.5; transform: rotate(-45deg) scale(1.2); box-shadow: 0 0 20px rgba(255, 112, 166, 1); }
+    }
+
+
+    /* Tooltip: Clean, sweet message style */
+    .star-tooltip {
       content: attr(data-message);
       position: absolute;
       bottom: 150%;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.95); /* Light background for easy reading */
-      color: #000;
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid #4f0000; /* Subtle border matching the deep moon */
+      background: #fff0f0; /* Soft pink background */
+      color: #6a0000; /* Deep red text */
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 8px 15px;
+      border-radius: 10px; /* Softer rounded corners */
+      border: 2px solid #ff70a6; /* Pink border */
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease-in-out;
       z-index: 10; 
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-family: 'Georgia', serif; /* A more romantic font style */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
 
-    .star:hover::after {
+    .star:hover > .star-tooltip { /* Updated selector to target the child element */
       opacity: 1;
     }
   </style>
 </head>
 <body>
-  <div class="moon-container">
-    <div class="moon"></div>
-  </div>
+  <div class="moon"></div>
+  <div class="horizon"></div>
 
   <script>
-    // Exactly 7 unique messages
+    // 7 unique and very sweet messages
     const messages = [
-      "You are my whole universe ✨",
-      "I have fallen deeper for you ❤️",
-      "You are the prettiest girl in the world 🌹",
-      "I see forever with you under the stars 🌌",
-      "The stars aligned the day I met you 💫",
-      "I love you with my whole heart 💖",
-      "Every day I fall harder 🥰"
+      "The 'I' in 'Us' 💖",
+      "You are my favorite view 🌹",
+      "Forever started with you 💍",
+      "My heart beats only for your laugh 😊",
+      "You are the reason for my stars ✨",
+      "I cherish every moment with you 🥰",
+      "My forever adventure is you 🗺️"
     ];
 
-    // 7 fixed, non-repeating star positions, away from the moon
+    // 7 fixed star positions (same as before, still high above the moon)
     const starPositions = [
-        { top: '10%', left: '15%' },    // Far Top-left
-        { top: '35%', left: '90%' },   // Mid-right edge
-        { top: '60%', left: '5%' },    // Left edge
-        { top: '15%', left: '45%' },   // Above moon area
-        { top: '85%', left: '30%' },   // Bottom-left area
-        { top: '90%', left: '80%' },   // Far Bottom-right
-        { top: '50%', left: '60%' }    // Off-center right
+        { top: '10%', left: '15%' },
+        { top: '5%', left: '85%' },
+        { top: '35%', left: '5%' },
+        { top: '15%', left: '45%' },
+        { top: '40%', left: '80%' },
+        { top: '50%', left: '25%' },
+        { top: '25%', left: '60%' }
     ];
 
     function createStar(position, message) {
       const star = document.createElement("div");
       star.classList.add("star");
       
+      // Create the tooltip element
+      const tooltip = document.createElement("span");
+      tooltip.classList.add("star-tooltip");
+      tooltip.textContent = message;
+      star.appendChild(tooltip); // Tooltip is now a child of the star
+
       star.style.top = position.top;
       star.style.left = position.left;
       
-      star.setAttribute("data-message", message);
-      
-      // Randomize the twinkle duration
-      star.style.animationDuration = (2 + Math.random() * 1) + "s"; 
+      star.style.animationDuration = (2 + Math.random() * 2) + "s"; 
       
       document.body.appendChild(star);
     }
