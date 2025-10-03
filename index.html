@@ -3,93 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Realistic Blood Moon and Stars</title>
+  <title>Celestial Blood Moon Romance</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      /* Deep night sky background */
-      background: radial-gradient(ellipse at bottom, #0d0116 0%, #000 100%); 
+      /* Very dark, atmospheric background (almost black with a hint of deep purple) */
+      background: radial-gradient(ellipse at bottom, #070014 0%, #000000 100%); 
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      font-family: 'Poppins', sans-serif;
-      color: white;
       position: relative;
     }
 
-    /* Moon: More realistic, deep red with softer glow */
+    /* --- THE MOON: Realism and Depth --- */
     .moon {
-      width: 250px; 
-      height: 250px;
-      /* Realistic texture/color using multiple layers and radial gradients */
-      background: 
-        radial-gradient(circle at 70% 30%, rgba(100, 100, 100, 0.2) 5%, transparent 20%), /* Faint texture spot */
-        radial-gradient(circle at 30% 70%, rgba(100, 100, 100, 0.1) 5%, transparent 15%), /* Another faint spot */
-        radial-gradient(circle at 50% 50%, #7c0a0a 0%, #4a0404 80%); /* Core red color */
+      width: 300px; /* Slightly larger for more impact */
+      height: 300px;
       border-radius: 50%;
       
-      /* Softer, atmospheric red glow */
+      /* Deeper, more complex blood red core */
+      background: radial-gradient(circle at 50% 50%, #8b0000 0%, #3d0000 70%); 
+      
+      /* Subtle dark shadow for 3D depth */
       box-shadow: 
-        0 0 50px 20px rgba(124, 10, 10, 0.9), /* Intense core glow */
-        0 0 150px 75px rgba(124, 10, 10, 0.5), /* Medium glow */
-        0 0 300px 150px rgba(124, 10, 10, 0.2); /* Wide, soft outer atmosphere */
+        inset 0 0 50px rgba(0, 0, 0, 0.6), /* Inner shadow for depth */
+        
+        /* Atmospheric Glow Layers (Red/Orange transition) */
+        0 0 60px 30px rgba(139, 0, 0, 0.8), /* Core, intense red glow */
+        0 0 180px 90px rgba(255, 69, 0, 0.4), /* Outer fiery orange glow */
+        0 0 350px 175px rgba(255, 69, 0, 0.15); /* Wide, soft atmospheric haze */
       
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 1; 
-      /* Optional: Subtle animation for a 'pulsing' glow effect */
-      animation: moonGlow 8s infinite alternate ease-in-out;
+      animation: pulseGlow 8s infinite alternate ease-in-out;
     }
     
-    @keyframes moonGlow {
-        from { box-shadow: 0 0 50px 20px rgba(124, 10, 10, 0.9), 0 0 150px 75px rgba(124, 10, 10, 0.5); }
-        to { box-shadow: 0 0 60px 25px rgba(150, 10, 10, 1), 0 0 170px 85px rgba(150, 10, 10, 0.6); }
+    /* Subtle glow pulse to add life to the moon */
+    @keyframes pulseGlow {
+        from { opacity: 0.95; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6), 0 0 60px 30px rgba(139, 0, 0, 0.8), 0 0 180px 90px rgba(255, 69, 0, 0.4); }
+        to { opacity: 1; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7), 0 0 75px 35px rgba(160, 0, 0, 0.9), 0 0 200px 100px rgba(255, 80, 0, 0.5); }
     }
 
 
-    /* Stars: Stationary with twinkle and hover message */
+    /* --- THE STARS AND TOOLTIPS --- */
     .star {
       position: absolute;
-      width: 4px;
-      height: 4px;
-      background: white;
+      width: 3px; /* Slightly smaller for elegance */
+      height: 3px;
+      background: #fff;
       border-radius: 50%;
-      animation: twinkle 2s infinite ease-in-out; 
+      animation: twinkle 2.5s infinite ease-in-out; 
       cursor: default;
-      box-shadow: 0 0 8px 2px rgba(255,255,255,0.9);
+      box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.7);
       z-index: 2;
     }
 
     @keyframes twinkle {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.3); }
+      50% { opacity: 0.4; transform: scale(1.5); }
     }
 
-    /* Tooltip: Shows on hover */
+    /* Tooltip: Clean, dark look for high contrast against the bright star */
     .star::after {
       content: attr(data-message);
       position: absolute;
       bottom: 150%;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.9);
-      color: #000;
-      font-size: 0.8rem;
-      font-weight: 500;
-      padding: 5px 10px;
-      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.85); /* Dark, professional background */
+      color: #ffd700; /* Gold text for a romantic touch */
+      font-size: 0.9rem;
+      font-weight: 400;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #8b0000; /* Subtle blood moon border */
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease-in-out;
       z-index: 10; 
       text-align: center;
-      min-width: 180px;
     }
 
     .star:hover::after {
@@ -103,7 +101,7 @@
   <script>
     // Exactly 7 unique messages
     const messages = [
-      "You are my universe ✨",
+      "You are my whole universe ✨",
       "I have fallen deeper for you ❤️",
       "You are the prettiest girl in the world 🌹",
       "I see forever with you under the stars 🌌",
@@ -112,30 +110,28 @@
       "Every day I fall harder 🥰"
     ];
 
-    // 7 fixed, non-repeating star positions
+    // 7 fixed, non-repeating star positions, avoiding the center (the moon)
     const starPositions = [
-        { top: '10%', left: '15%' },  // Top-left corner
-        { top: '25%', left: '85%' },  // Top-right area
-        { top: '45%', left: '5%' },   // Left edge
-        { top: '15%', left: '40%' },  // Near top-center
-        { top: '75%', left: '25%' },  // Bottom-left area
-        { top: '85%', left: '70%' },  // Bottom-right area
-        { top: '60%', left: '95%' }   // Right edge
+        { top: '8%', left: '12%' },    // Far Top-left
+        { top: '30%', left: '88%' },   // Mid-right edge
+        { top: '55%', left: '8%' },    // Left edge
+        { top: '15%', left: '55%' },   // Above moon
+        { top: '80%', left: '25%' },   // Bottom-left area
+        { top: '88%', left: '75%' },   // Far Bottom-right
+        { top: '65%', left: '92%' }    // Far Right edge
     ];
 
     function createStar(position, message) {
       const star = document.createElement("div");
       star.classList.add("star");
       
-      // Set fixed position
       star.style.top = position.top;
       star.style.left = position.left;
       
-      // Set unique message
       star.setAttribute("data-message", message);
       
-      // Randomize the twinkle duration slightly
-      star.style.animationDuration = (1.5 + Math.random() * 1.5) + "s"; 
+      // Randomize the twinkle duration
+      star.style.animationDuration = (2 + Math.random() * 1) + "s"; 
       
       document.body.appendChild(star);
     }
