@@ -10,7 +10,7 @@
       background: black;
       overflow: hidden;
       color: white;
-      font-family: 'Playfair Display', Georgia, serif; /* elegant font */
+      font-family: 'Playfair Display', Georgia, serif;
     }
 
     canvas {
@@ -58,7 +58,7 @@
   </style>
 </head>
 <body>
-  <!-- Two canvases: one for stars, one for moon -->
+  <!-- Canvases -->
   <canvas id="stars"></canvas>
   <canvas id="moon"></canvas>
 
@@ -88,7 +88,7 @@
       "Since September 7th, my world has been nothing but wonder"
     ];
 
-    // Shuffle
+    // Shuffle helper
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -98,33 +98,45 @@
     }
     const shuffledMessages = shuffle([...messages]);
 
-    // Generate stars (spread further apart, fewer stars = more space)
+    // Generate drifting glowing stars
     const stars = [];
-    const starCount = shuffledMessages.length * 2; // more stars but still spaced
+    const starCount = 80; // more stars
     for (let i = 0; i < starCount; i++) {
       stars.push({
         x: Math.random() * starCanvas.width,
         y: Math.random() * starCanvas.height,
-        radius: Math.random() * 2 + 1.5,
-        baseGlow: Math.random() * 15 + 5,
+        radius: Math.random() * 2 + 1.2,
+        baseGlow: Math.random() * 15 + 10,
         phase: Math.random() * Math.PI * 2,
+        dx: (Math.random() - 0.5) * 0.3, // slow horizontal drift
+        dy: (Math.random() - 0.5) * 0.3, // slow vertical drift
         message: shuffledMessages[i % shuffledMessages.length]
       });
     }
 
-    // Draw stars with glow (animated flicker)
+    // Animate stars
     function drawStars() {
       starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
 
       for (let star of stars) {
-        star.phase += 0.02; 
-        const flicker = Math.sin(star.phase) * 2 + star.baseGlow;
+        star.phase += 0.05; 
+        const flicker = Math.sin(star.phase) * 4 + star.baseGlow;
+
+        // Move star slowly
+        star.x += star.dx;
+        star.y += star.dy;
+
+        // Wrap around edges
+        if (star.x < 0) star.x = starCanvas.width;
+        if (star.x > starCanvas.width) star.x = 0;
+        if (star.y < 0) star.y = starCanvas.height;
+        if (star.y > starCanvas.height) star.y = 0;
 
         starCtx.beginPath();
         starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         starCtx.fillStyle = "white";
         starCtx.shadowColor = "white";
-        starCtx.shadowBlur = flicker; // soft glowing effect
+        starCtx.shadowBlur = flicker;
         starCtx.fill();
         starCtx.closePath();
       }
@@ -133,7 +145,7 @@
     }
     drawStars();
 
-    // Moon (bigger glowing aura)
+    // Moon (super glowing)
     const moonX = moonCanvas.width / 2;
     const moonY = moonCanvas.height / 3;
     const moonRadius = 120;
@@ -143,17 +155,17 @@
       moonCtx.clearRect(0, 0, moonCanvas.width, moonCanvas.height);
 
       glowPulse += 0.05;
-      let pulse = Math.sin(glowPulse) * 40 + 80; // much stronger glow
+      let pulse = Math.sin(glowPulse) * 80 + 150; // 🌙 huge glow
 
       const gradient = moonCtx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
       gradient.addColorStop(0, "#ff4d4d");
-      gradient.addColorStop(1, "#330000");
+      gradient.addColorStop(1, "#220000");
 
       moonCtx.beginPath();
       moonCtx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
       moonCtx.fillStyle = gradient;
       moonCtx.shadowColor = "red";
-      moonCtx.shadowBlur = pulse;
+      moonCtx.shadowBlur = pulse; // super strong glow
       moonCtx.fill();
       moonCtx.closePath();
 
@@ -161,7 +173,7 @@
     }
     drawMoon();
 
-    // Click stars
+    // Click stars for popup
     starCanvas.addEventListener("click", (e) => {
       const clickX = e.clientX;
       const clickY = e.clientY;
@@ -190,11 +202,11 @@
       const diffTime = Math.abs(today - startDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       document.getElementById("counter").textContent = 
-        `🌙 Since 7th September 2025: ${diffDays} days together ❤️`;
+        `🌙 Since 7th September 2025`;
     }
     updateCounter();
 
-    // Resize handling: redraw stars but keep moon centered
+    // Resize handling
     window.addEventListener("resize", () => {
       starCanvas.width = moonCanvas.width = window.innerWidth;
       starCanvas.height = moonCanvas.height = window.innerHeight;
