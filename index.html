@@ -95,24 +95,24 @@
     const starCount = shuffledMessages.length;
     const stars = [];
 
-    // Create stars (bigger radius)
+    // Create stars (bigger radius, static)
     for (let i = 0; i < starCount; i++) {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         radius: Math.random() * 3 + 2, // bigger stars
-        alpha: Math.random(),
-        fade: Math.random() * 0.02 + 0.005,
         message: shuffledMessages[i]
       });
     }
 
-    // Draw blood moon
-    function drawMoon() {
-      const moonX = canvas.width / 2;
-      const moonY = canvas.height / 2;
-      const moonRadius = 120;
+    // Moon position (start left)
+    let moonX = 0;
+    let moonY = canvas.height / 3;
+    const moonRadius = 120;
+    const moonSpeed = 0.2; // adjust for faster/slower drift
 
+    // Draw moving moon
+    function drawMoon() {
       const gradient = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
       gradient.addColorStop(0, "#ff4d4d");
       gradient.addColorStop(1, "#330000");
@@ -125,28 +125,27 @@
       ctx.shadowColor = "red";
       ctx.shadowBlur = 50;
       ctx.closePath();
+
+      // Move moon
+      moonX += moonSpeed;
+      if (moonX - moonRadius > canvas.width) {
+        moonX = -moonRadius; // loop back
+      }
     }
 
     function drawStars() {
       for (let star of stars) {
-        star.alpha += star.fade;
-        if (star.alpha <= 0 || star.alpha >= 1) {
-          star.fade = -star.fade;
-        }
-
-        ctx.globalAlpha = star.alpha;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = "white";
         ctx.fill();
       }
-      ctx.globalAlpha = 1;
     }
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawMoon();
       drawStars();
+      drawMoon();
       requestAnimationFrame(animate);
     }
     animate();
