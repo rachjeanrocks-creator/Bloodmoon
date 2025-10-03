@@ -10,7 +10,7 @@
       background: black;
       overflow: hidden;
       color: white;
-      font-family: 'Georgia', serif;
+      font-family: 'Playfair Display', Georgia, serif; /* elegant font */
     }
 
     canvas {
@@ -44,6 +44,7 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 1rem;
+      font-family: inherit;
     }
 
     .counter {
@@ -57,7 +58,7 @@
   </style>
 </head>
 <body>
-  <!-- Two canvases: one for static stars, one for glowing moon -->
+  <!-- Two canvases: one for stars, one for moon -->
   <canvas id="stars"></canvas>
   <canvas id="moon"></canvas>
 
@@ -97,29 +98,42 @@
     }
     const shuffledMessages = shuffle([...messages]);
 
-    // Generate stars ONCE
+    // Generate stars (spread further apart, fewer stars = more space)
     const stars = [];
-    for (let i = 0; i < shuffledMessages.length; i++) {
+    const starCount = shuffledMessages.length * 2; // more stars but still spaced
+    for (let i = 0; i < starCount; i++) {
       stars.push({
         x: Math.random() * starCanvas.width,
         y: Math.random() * starCanvas.height,
-        radius: Math.random() * 3 + 2,
-        message: shuffledMessages[i]
+        radius: Math.random() * 2 + 1.5,
+        baseGlow: Math.random() * 15 + 5,
+        phase: Math.random() * Math.PI * 2,
+        message: shuffledMessages[i % shuffledMessages.length]
       });
     }
 
-    // Draw stars one time only
+    // Draw stars with glow (animated flicker)
     function drawStars() {
-      starCtx.fillStyle = "white";
+      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+
       for (let star of stars) {
+        star.phase += 0.02; 
+        const flicker = Math.sin(star.phase) * 2 + star.baseGlow;
+
         starCtx.beginPath();
         starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        starCtx.fillStyle = "white";
+        starCtx.shadowColor = "white";
+        starCtx.shadowBlur = flicker; // soft glowing effect
         starCtx.fill();
+        starCtx.closePath();
       }
-    }
-    drawStars(); // draw once and done ✅
 
-    // Moon animation (glowing only, no movement)
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // Moon (bigger glowing aura)
     const moonX = moonCanvas.width / 2;
     const moonY = moonCanvas.height / 3;
     const moonRadius = 120;
@@ -129,7 +143,7 @@
       moonCtx.clearRect(0, 0, moonCanvas.width, moonCanvas.height);
 
       glowPulse += 0.05;
-      let pulse = Math.sin(glowPulse) * 20 + 40;
+      let pulse = Math.sin(glowPulse) * 40 + 80; // much stronger glow
 
       const gradient = moonCtx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
       gradient.addColorStop(0, "#ff4d4d");
@@ -184,7 +198,6 @@
     window.addEventListener("resize", () => {
       starCanvas.width = moonCanvas.width = window.innerWidth;
       starCanvas.height = moonCanvas.height = window.innerHeight;
-      drawStars();
     });
   </script>
 </body>
