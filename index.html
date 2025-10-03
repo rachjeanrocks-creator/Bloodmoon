@@ -57,7 +57,7 @@
   </style>
 </head>
 <body>
-  <!-- Two canvases: one for static stars, one for animated moon -->
+  <!-- Two canvases: one for static stars, one for glowing moon -->
   <canvas id="stars"></canvas>
   <canvas id="moon"></canvas>
 
@@ -119,11 +119,10 @@
     }
     drawStars(); // draw once and done ✅
 
-    // Moon animation
-    let moonX = -150;
-    let moonY = moonCanvas.height / 3;
+    // Moon animation (glowing only, no movement)
+    const moonX = moonCanvas.width / 2;
+    const moonY = moonCanvas.height / 3;
     const moonRadius = 120;
-    const moonSpeed = 0.3;
     let glowPulse = 0;
 
     function drawMoon() {
@@ -143,11 +142,6 @@
       moonCtx.shadowBlur = pulse;
       moonCtx.fill();
       moonCtx.closePath();
-
-      moonX += moonSpeed;
-      if (moonX - moonRadius > moonCanvas.width) {
-        moonX = -moonRadius;
-      }
 
       requestAnimationFrame(drawMoon);
     }
@@ -186,11 +180,11 @@
     }
     updateCounter();
 
-    // Resize handling: only redraw stars once
+    // Resize handling: redraw stars but keep moon centered
     window.addEventListener("resize", () => {
       starCanvas.width = moonCanvas.width = window.innerWidth;
       starCanvas.height = moonCanvas.height = window.innerHeight;
-      drawStars(); // redraw stars in same stored positions
+      drawStars();
     });
   </script>
 </body>
