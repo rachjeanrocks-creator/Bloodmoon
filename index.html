@@ -70,27 +70,40 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const starCount = 25; 
-    const stars = [];
+    // Messages (each star gets one unique message)
     const messages = [
-Our love began under a bloodmoon, and it keeps glowing brighter
-You make the night sky jealous with how much you shine
-One month feels like forever in the best way
-Your smile is my favorite kind of starlight
-I fall for you again every single day
-With you, even silence feels like music
-Since September 7th, my world has been nothing but wonder
+      "Our love began under a bloodmoon, and it keeps glowing brighter",
+      "You make the night sky jealous with how much you shine",
+      "One month feels like forever in the best way",
+      "Your smile is my favorite kind of starlight",
+      "I fall for you again every single day",
+      "With you, even silence feels like music",
+      "Since September 7th, my world has been nothing but wonder"
     ];
 
-    // Create stars
+    // Shuffle messages so placement is random
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    const shuffledMessages = shuffle([...messages]);
+
+    // Number of stars = number of messages (no repeats)
+    const starCount = shuffledMessages.length;
+    const stars = [];
+
+    // Create stars (bigger radius)
     for (let i = 0; i < starCount; i++) {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        radius: Math.random() * 2 + 1,
-        alpha: Math.random(), // brightness
-        fade: Math.random() * 0.02 + 0.005, // twinkle speed
-        message: messages[i % messages.length]
+        radius: Math.random() * 3 + 2, // bigger stars
+        alpha: Math.random(),
+        fade: Math.random() * 0.02 + 0.005,
+        message: shuffledMessages[i]
       });
     }
 
@@ -118,7 +131,7 @@ Since September 7th, my world has been nothing but wonder
       for (let star of stars) {
         star.alpha += star.fade;
         if (star.alpha <= 0 || star.alpha >= 1) {
-          star.fade = -star.fade; // reverse fade
+          star.fade = -star.fade;
         }
 
         ctx.globalAlpha = star.alpha;
@@ -136,7 +149,6 @@ Since September 7th, my world has been nothing but wonder
       drawStars();
       requestAnimationFrame(animate);
     }
-
     animate();
 
     // Detect clicks on stars
