@@ -20,16 +20,9 @@
       position: relative; /* Needed for absolute positioning of stars/moon */
     }
 
-    h1 {
-      font-size: 3rem;
-      font-weight: 600;
-      margin-top: 50px; /* Space from the top */
-      z-index: 10;
-    }
-
-    /* Moon: Now fixed and glowing intensely */
+    /* Moon: Fixed and glowing intensely */
     .moon {
-      width: 250px; /* Made slightly bigger */
+      width: 250px; 
       height: 250px;
       /* Blood Moon core color */
       background: radial-gradient(circle at 50% 50%, #ff6f61, #8b0000); 
@@ -46,18 +39,18 @@
       z-index: 2;
     }
 
-    /* Stars: Removed moveStars animation */
+    /* Stars: Stationary with twinkle animation */
     .star {
       position: absolute;
       width: 4px;
       height: 4px;
       background: white;
       border-radius: 50%;
-      /* Only twinkle animation remains */
       animation: twinkle 2s infinite ease-in-out; 
       cursor: pointer;
       box-shadow: 0 0 8px 2px rgba(255,255,255,0.9);
       transition: transform 0.1s; /* For a nice click effect */
+      z-index: 3; /* Keep stars above the moon's glow */
     }
     
     /* Small click effect for the star */
@@ -98,7 +91,6 @@
   </style>
 </head>
 <body>
-  <h1>Click a Star for a Secret Message!</h1>
   <div class="moon"></div>
   <div id="message-box"></div> <script>
     const messages = [
@@ -123,10 +115,10 @@
         // Make the message box visible
         messageBox.classList.add("visible");
 
-        // Optional: Hide the message after a few seconds
+        // Hide the message after 4 seconds
         setTimeout(() => {
             messageBox.classList.remove("visible");
-        }, 4000); // Message disappears after 4 seconds
+        }, 4000); 
     }
 
     function createStar() {
@@ -144,13 +136,13 @@
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
       star.setAttribute("data-message", randomMessage);
       
-      // --- Event Listener for Click ---
+      // Event Listener for Click
       star.addEventListener("click", displayMessage);
       
       document.body.appendChild(star);
     }
 
-    // create many stars
+    // Create 80 stars
     for (let i = 0; i < 80; i++) {
       createStar();
     }
