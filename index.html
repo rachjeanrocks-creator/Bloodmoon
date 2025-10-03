@@ -57,7 +57,7 @@
   </style>
 </head>
 <body>
-  <canvas id="stars"></canvas>
+  <canvas id="sky"></canvas>
   <div class="popup" id="popup">
     <p id="popupMessage"></p>
     <button onclick="closePopup()">Close</button>
@@ -65,12 +65,12 @@
   <div class="counter" id="counter"></div>
 
   <script>
-    const canvas = document.getElementById('stars');
+    const canvas = document.getElementById('sky');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Messages (each star gets one unique message)
+    // Messages
     const messages = [
       "Our love began under a bloodmoon, and it keeps glowing brighter",
       "You make the night sky jealous with how much you shine",
@@ -81,7 +81,7 @@
       "Since September 7th, my world has been nothing but wonder"
     ];
 
-    // Shuffle messages so placement is random
+    // Shuffle
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -91,31 +91,36 @@
     }
     const shuffledMessages = shuffle([...messages]);
 
-    // Number of stars = number of messages (no repeats)
-    const starCount = shuffledMessages.length;
+    // Stars: static, drawn once
     const stars = [];
-
-    // Create static stars (they don't move)
-    for (let i = 0; i < starCount; i++) {
+    for (let i = 0; i < shuffledMessages.length; i++) {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        radius: Math.random() * 3 + 2, // bigger stars
+        radius: Math.random() * 3 + 2,
         message: shuffledMessages[i]
       });
     }
 
-    // Moon position (moves across the screen)
+    function drawStars() {
+      ctx.fillStyle = "white";
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Moon
     let moonX = -150;
     let moonY = canvas.height / 3;
     const moonRadius = 120;
     const moonSpeed = 0.3;
-
     let glowPulse = 0;
 
     function drawMoon() {
       glowPulse += 0.05;
-      let pulse = Math.sin(glowPulse) * 20 + 40; // makes glow flicker gently
+      let pulse = Math.sin(glowPulse) * 20 + 40;
 
       const gradient = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
       gradient.addColorStop(0, "#ff4d4d");
@@ -129,32 +134,21 @@
       ctx.fill();
       ctx.closePath();
 
-      // Move moon
       moonX += moonSpeed;
       if (moonX - moonRadius > canvas.width) {
-        moonX = -moonRadius; // reset
-      }
-    }
-
-    function drawStars() {
-      for (let star of stars) {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "white";
-        ctx.fill();
-        ctx.closePath();
+        moonX = -moonRadius;
       }
     }
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawStars();
-      drawMoon();
+      drawStars();   // always in the same place
+      drawMoon();    // only the moon moves
       requestAnimationFrame(animate);
     }
     animate();
 
-    // Detect clicks on stars
+    // Click stars
     canvas.addEventListener("click", (e) => {
       const clickX = e.clientX;
       const clickY = e.clientY;
@@ -169,17 +163,14 @@
     });
 
     function showPopup(message) {
-      const popup = document.getElementById("popup");
-      const popupMessage = document.getElementById("popupMessage");
-      popupMessage.textContent = message;
-      popup.style.display = "block";
+      document.getElementById("popupMessage").textContent = message;
+      document.getElementById("popup").style.display = "block";
     }
-
     function closePopup() {
       document.getElementById("popup").style.display = "none";
     }
 
-    // Day counter since 7 Sept 2025
+    // Counter
     function updateCounter() {
       const startDate = new Date("2025-09-07");
       const today = new Date();
@@ -190,9 +181,11 @@
     }
     updateCounter();
 
+    // IMPORTANT: keep stars fixed when resizing
     window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      drawStars(); // redraw static stars in the SAME places
     });
   </script>
 </body>
