@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Celestial Blood Moon Romance</title>
+  <title>Crimson Eclipse with Messages</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      /* Very dark, atmospheric background (almost black with a hint of deep purple) */
-      background: radial-gradient(ellipse at bottom, #070014 0%, #000000 100%); 
+      /* Deep space background with a hint of blue-black */
+      background: radial-gradient(ellipse at bottom, #09091a 0%, #000000 100%); 
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -17,77 +17,87 @@
       position: relative;
     }
 
-    /* --- THE MOON: Realism and Depth --- */
-    .moon {
-      width: 300px; /* Slightly larger for more impact */
-      height: 300px;
-      border-radius: 50%;
-      
-      /* Deeper, more complex blood red core */
-      background: radial-gradient(circle at 50% 50%, #8b0000 0%, #3d0000 70%); 
-      
-      /* Subtle dark shadow for 3D depth */
-      box-shadow: 
-        inset 0 0 50px rgba(0, 0, 0, 0.6), /* Inner shadow for depth */
-        
-        /* Atmospheric Glow Layers (Red/Orange transition) */
-        0 0 60px 30px rgba(139, 0, 0, 0.8), /* Core, intense red glow */
-        0 0 180px 90px rgba(255, 69, 0, 0.4), /* Outer fiery orange glow */
-        0 0 350px 175px rgba(255, 69, 0, 0.15); /* Wide, soft atmospheric haze */
-      
+    /* --- THE MOON: Eclipse Effect --- */
+    .moon-container {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 1; 
+      width: 400px; /* Large container to hold the glow */
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .moon {
+      width: 250px; 
+      height: 250px;
+      border-radius: 50%;
+      
+      /* Deeper, velvety red core */
+      background: radial-gradient(circle at 50% 50%, #4f0000 0%, #2a0000 70%); 
+      
+      /* Realistic Eclipse Glow (Corona) - Intense but contained */
+      box-shadow: 
+        /* Deep red inner glow (the light source) */
+        0 0 40px 15px rgba(139, 0, 0, 0.9), 
+        /* Outer, atmospheric ring (the corona) */
+        0 0 150px 75px rgba(255, 69, 0, 0.2), 
+        /* Very wide, subtle halo */
+        0 0 300px 150px rgba(255, 69, 0, 0.05); 
+        
+      z-index: 2; /* Sits above the container and stars */
       animation: pulseGlow 8s infinite alternate ease-in-out;
     }
     
-    /* Subtle glow pulse to add life to the moon */
+    /* Subtle glow pulse */
     @keyframes pulseGlow {
-        from { opacity: 0.95; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.6), 0 0 60px 30px rgba(139, 0, 0, 0.8), 0 0 180px 90px rgba(255, 69, 0, 0.4); }
-        to { opacity: 1; box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7), 0 0 75px 35px rgba(160, 0, 0, 0.9), 0 0 200px 100px rgba(255, 80, 0, 0.5); }
+        from { box-shadow: 0 0 40px 15px rgba(139, 0, 0, 0.9), 0 0 150px 75px rgba(255, 69, 0, 0.2); }
+        to { box-shadow: 0 0 50px 20px rgba(160, 0, 0, 1), 0 0 170px 85px rgba(255, 80, 0, 0.3); }
     }
 
 
     /* --- THE STARS AND TOOLTIPS --- */
     .star {
       position: absolute;
-      width: 3px; /* Slightly smaller for elegance */
+      width: 3px; 
       height: 3px;
       background: #fff;
       border-radius: 50%;
       animation: twinkle 2.5s infinite ease-in-out; 
       cursor: default;
-      box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.7);
-      z-index: 2;
+      box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.8);
+      z-index: 3; /* Always on top */
     }
 
     @keyframes twinkle {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.5); }
+      50% { opacity: 0.3; transform: scale(1.6); }
     }
 
-    /* Tooltip: Clean, dark look for high contrast against the bright star */
+    /* Tooltip: Clean, minimalist message */
     .star::after {
       content: attr(data-message);
       position: absolute;
       bottom: 150%;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.85); /* Dark, professional background */
-      color: #ffd700; /* Gold text for a romantic touch */
-      font-size: 0.9rem;
-      font-weight: 400;
+      background: rgba(255, 255, 255, 0.95); /* Light background for easy reading */
+      color: #000;
+      font-size: 0.85rem;
+      font-weight: 500;
       padding: 6px 12px;
       border-radius: 4px;
-      border: 1px solid #8b0000; /* Subtle blood moon border */
+      border: 1px solid #4f0000; /* Subtle border matching the deep moon */
       white-space: nowrap;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease-in-out;
       z-index: 10; 
       text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
     .star:hover::after {
@@ -96,7 +106,9 @@
   </style>
 </head>
 <body>
-  <div class="moon"></div>
+  <div class="moon-container">
+    <div class="moon"></div>
+  </div>
 
   <script>
     // Exactly 7 unique messages
@@ -110,15 +122,15 @@
       "Every day I fall harder 🥰"
     ];
 
-    // 7 fixed, non-repeating star positions, avoiding the center (the moon)
+    // 7 fixed, non-repeating star positions, away from the moon
     const starPositions = [
-        { top: '8%', left: '12%' },    // Far Top-left
-        { top: '30%', left: '88%' },   // Mid-right edge
-        { top: '55%', left: '8%' },    // Left edge
-        { top: '15%', left: '55%' },   // Above moon
-        { top: '80%', left: '25%' },   // Bottom-left area
-        { top: '88%', left: '75%' },   // Far Bottom-right
-        { top: '65%', left: '92%' }    // Far Right edge
+        { top: '10%', left: '15%' },    // Far Top-left
+        { top: '35%', left: '90%' },   // Mid-right edge
+        { top: '60%', left: '5%' },    // Left edge
+        { top: '15%', left: '45%' },   // Above moon area
+        { top: '85%', left: '30%' },   // Bottom-left area
+        { top: '90%', left: '80%' },   // Far Bottom-right
+        { top: '50%', left: '60%' }    // Off-center right
     ];
 
     function createStar(position, message) {
