@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Our Blood Moon</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: 'Georgia', serif;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(20, 20, 20, 0.95);
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.5);
+      font-size: 1.2rem;
+      text-align: center;
+      max-width: 400px;
+      display: none;
+      z-index: 10;
+    }
+
+    .popup button {
+      margin-top: 15px;
+      background: #ff4d4d;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .counter {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <div class="popup" id="popup">
+    <p id="popupMessage"></p>
+    <button onclick="closePopup()">Close</button>
+  </div>
+  <div class="counter" id="counter"></div>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const starCount = 25; 
+    const stars = [];
+    const messages = [
+      "The night we met under the blood moon will always be special 🌙",
+      "You make the world feel softer and brighter ✨",
+      "One month down, forever to go ❤️",
+      "Your laugh is my favorite song 🎶",
+      "I love the way your eyes light up 🌟",
+      "With you, everything feels magical 💫",
+      "Every day since September 7th has been the best gift 🌹"
+    ];
+
+    // Create stars
+    for (let i = 0; i < starCount; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        alpha: Math.random(), // brightness
+        fade: Math.random() * 0.02 + 0.005, // twinkle speed
+        message: messages[i % messages.length]
+      });
+    }
+
+    // Draw blood moon
+    function drawMoon() {
+      const moonX = canvas.width / 2;
+      const moonY = canvas.height / 2;
+      const moonRadius = 120;
+
+      const gradient = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
+      gradient.addColorStop(0, "#ff4d4d");
+      gradient.addColorStop(1, "#330000");
+
+      ctx.beginPath();
+      ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      ctx.shadowColor = "red";
+      ctx.shadowBlur = 50;
+      ctx.closePath();
+    }
+
+    function drawStars() {
+      for (let star of stars) {
+        star.alpha += star.fade;
+        if (star.alpha <= 0 || star.alpha >= 1) {
+          star.fade = -star.fade; // reverse fade
+        }
+
+        ctx.globalAlpha = star.alpha;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawMoon();
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Detect clicks on stars
+    canvas.addEventListener("click", (e) => {
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+      for (let star of stars) {
+        const dx = clickX - star.x;
+        const dy = clickY - star.y;
+        if (Math.sqrt(dx*dx + dy*dy) < star.radius + 6) {
+          showPopup(star.message);
+          break;
+        }
+      }
+    });
+
+    function showPopup(message) {
+      const popup = document.getElementById("popup");
+      const popupMessage = document.getElementById("popupMessage");
+      popupMessage.textContent = message;
+      popup.style.display = "block";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    // Day counter since 7 Sept 2025
+    function updateCounter() {
+      const startDate = new Date("2025-09-07");
+      const today = new Date();
+      const diffTime = Math.abs(today - startDate);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      document.getElementById("counter").textContent = 
+        `🌙 Since 7th September 2025: ${diffDays} days together ❤️`;
+    }
+    updateCounter();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
