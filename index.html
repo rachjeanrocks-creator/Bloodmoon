@@ -57,7 +57,10 @@
   </style>
 </head>
 <body>
-  <canvas id="sky"></canvas>
+  <!-- Two canvases: one for static stars, one for animated moon -->
+  <canvas id="stars"></canvas>
+  <canvas id="moon"></canvas>
+
   <div class="popup" id="popup">
     <p id="popupMessage"></p>
     <button onclick="closePopup()">Close</button>
@@ -65,10 +68,13 @@
   <div class="counter" id="counter"></div>
 
   <script>
-    const canvas = document.getElementById('sky');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const starCanvas = document.getElementById('stars');
+    const starCtx = starCanvas.getContext('2d');
+    const moonCanvas = document.getElementById('moon');
+    const moonCtx = moonCanvas.getContext('2d');
+
+    starCanvas.width = moonCanvas.width = window.innerWidth;
+    starCanvas.height = moonCanvas.height = window.innerHeight;
 
     // Messages
     const messages = [
@@ -91,65 +97,64 @@
     }
     const shuffledMessages = shuffle([...messages]);
 
-    // Stars: static, drawn once
+    // Generate stars ONCE
     const stars = [];
     for (let i = 0; i < shuffledMessages.length; i++) {
       stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * starCanvas.width,
+        y: Math.random() * starCanvas.height,
         radius: Math.random() * 3 + 2,
         message: shuffledMessages[i]
       });
     }
 
+    // Draw stars one time only
     function drawStars() {
-      ctx.fillStyle = "white";
+      starCtx.fillStyle = "white";
       for (let star of stars) {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fill();
+        starCtx.beginPath();
+        starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        starCtx.fill();
       }
     }
+    drawStars(); // draw once and done ✅
 
-    // Moon
+    // Moon animation
     let moonX = -150;
-    let moonY = canvas.height / 3;
+    let moonY = moonCanvas.height / 3;
     const moonRadius = 120;
     const moonSpeed = 0.3;
     let glowPulse = 0;
 
     function drawMoon() {
+      moonCtx.clearRect(0, 0, moonCanvas.width, moonCanvas.height);
+
       glowPulse += 0.05;
       let pulse = Math.sin(glowPulse) * 20 + 40;
 
-      const gradient = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
+      const gradient = moonCtx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
       gradient.addColorStop(0, "#ff4d4d");
       gradient.addColorStop(1, "#330000");
 
-      ctx.beginPath();
-      ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.shadowColor = "red";
-      ctx.shadowBlur = pulse;
-      ctx.fill();
-      ctx.closePath();
+      moonCtx.beginPath();
+      moonCtx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+      moonCtx.fillStyle = gradient;
+      moonCtx.shadowColor = "red";
+      moonCtx.shadowBlur = pulse;
+      moonCtx.fill();
+      moonCtx.closePath();
 
       moonX += moonSpeed;
-      if (moonX - moonRadius > canvas.width) {
+      if (moonX - moonRadius > moonCanvas.width) {
         moonX = -moonRadius;
       }
-    }
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawStars();   // always in the same place
-      drawMoon();    // only the moon moves
-      requestAnimationFrame(animate);
+      requestAnimationFrame(drawMoon);
     }
-    animate();
+    drawMoon();
 
     // Click stars
-    canvas.addEventListener("click", (e) => {
+    starCanvas.addEventListener("click", (e) => {
       const clickX = e.clientX;
       const clickY = e.clientY;
       for (let star of stars) {
@@ -181,11 +186,11 @@
     }
     updateCounter();
 
-    // IMPORTANT: keep stars fixed when resizing
+    // Resize handling: only redraw stars once
     window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      drawStars(); // redraw static stars in the SAME places
+      starCanvas.width = moonCanvas.width = window.innerWidth;
+      starCanvas.height = moonCanvas.height = window.innerHeight;
+      drawStars(); // redraw stars in same stored positions
     });
   </script>
 </body>
