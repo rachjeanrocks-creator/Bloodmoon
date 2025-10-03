@@ -95,7 +95,7 @@
     const starCount = shuffledMessages.length;
     const stars = [];
 
-    // Create static stars (no twinkle)
+    // Create static stars (they don't move)
     for (let i = 0; i < starCount; i++) {
       stars.push({
         x: Math.random() * canvas.width,
@@ -105,14 +105,18 @@
       });
     }
 
-    // Moon position (start off-screen left)
+    // Moon position (moves across the screen)
     let moonX = -150;
     let moonY = canvas.height / 3;
     const moonRadius = 120;
-    const moonSpeed = 0.3; // pixels per frame
+    const moonSpeed = 0.3;
 
-    // Draw moving moon
+    let glowPulse = 0;
+
     function drawMoon() {
+      glowPulse += 0.05;
+      let pulse = Math.sin(glowPulse) * 20 + 40; // makes glow flicker gently
+
       const gradient = ctx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
       gradient.addColorStop(0, "#ff4d4d");
       gradient.addColorStop(1, "#330000");
@@ -120,16 +124,15 @@
       ctx.beginPath();
       ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
       ctx.fillStyle = gradient;
-      ctx.fill();
-
       ctx.shadowColor = "red";
-      ctx.shadowBlur = 50;
+      ctx.shadowBlur = pulse;
+      ctx.fill();
       ctx.closePath();
 
       // Move moon
       moonX += moonSpeed;
       if (moonX - moonRadius > canvas.width) {
-        moonX = -moonRadius; // loop back
+        moonX = -moonRadius; // reset
       }
     }
 
@@ -139,6 +142,7 @@
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = "white";
         ctx.fill();
+        ctx.closePath();
       }
     }
 
