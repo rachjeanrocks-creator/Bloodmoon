@@ -95,7 +95,7 @@
     const starCount = shuffledMessages.length;
     const stars = [];
 
-    // Create stars (bigger radius, static)
+    // Create static stars (no twinkle)
     for (let i = 0; i < starCount; i++) {
       stars.push({
         x: Math.random() * canvas.width,
@@ -105,11 +105,11 @@
       });
     }
 
-    // Moon position (start left)
-    let moonX = 0;
+    // Moon position (start off-screen left)
+    let moonX = -150;
     let moonY = canvas.height / 3;
     const moonRadius = 120;
-    const moonSpeed = 0.2; // adjust for faster/slower drift
+    const moonSpeed = 0.3; // pixels per frame
 
     // Draw moving moon
     function drawMoon() {
