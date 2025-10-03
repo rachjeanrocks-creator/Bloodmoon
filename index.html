@@ -1,187 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Our Blood Moon</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glowing Moon & Stars</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: black;
+      /* Changed to a blood moon gradient */
+      background: radial-gradient(ellipse at bottom, #2b0c0c 0%, #000 100%); 
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-family: 'Poppins', sans-serif;
       color: white;
-      font-family: 'Georgia', serif;
     }
 
-    canvas {
+    h1 {
+      font-size: 3rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    /* Moon: Changed color to simulate a "blood moon" effect */
+    .moon {
+      width: 180px;
+      height: 180px;
+      /* Blood Moon effect with red/orange glow */
+      background: radial-gradient(circle at 30% 30%, #ff6f61, #8b0000); 
+      border-radius: 50%;
+      box-shadow: 
+        0 0 80px 40px #8b0000,
+        0 0 160px 80px #b22222,
+        0 0 240px 120px #dc143c; /* stronger red glow */
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Stars */
+    .star {
       position: absolute;
-      top: 0;
-      left: 0;
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite ease-in-out, moveStars 25s linear infinite;
+      cursor: pointer;
+      box-shadow: 0 0 8px 2px rgba(255,255,255,0.9);
+      /* This is essential for the tooltip to position correctly */
+      position: absolute; 
     }
 
-    /* Tooltip styling */
-    .tooltip {
-      position: fixed;
-      background: rgba(0,0,0,0.8);
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      pointer-events: none;
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 20;
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
     }
 
-    .counter {
+    @keyframes moveStars {
+      from { transform: translateY(0); }
+      to { transform: translateY(100vh); }
+    }
+
+    /* --- TOOLTIP STYLES ADDED HERE --- */
+    .star::after {
+      content: attr(data-message); /* Pulls the message from the data-message attribute */
       position: absolute;
-      bottom: 15px;
+      bottom: 150%; /* Position above the star */
       left: 50%;
       transform: translateX(-50%);
-      font-size: 1rem;
-      opacity: 0.85;
-      z-index: 5;
+      background: rgba(255, 255, 255, 0.95); /* Light background for contrast */
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 5px;
+      white-space: nowrap;
+      pointer-events: none; /* Allows clicks to go through the hidden element */
+      opacity: 0; /* Starts hidden */
+      transition: opacity 0.2s ease-in-out;
+      z-index: 10; /* Ensures it appears over other elements */
+      min-width: 150px; /* Gives space for the message */
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
+
+    .star:hover::after {
+      opacity: 1; /* Shows the tooltip on hover */
+    }
+    /* ---------------------------------- */
   </style>
 </head>
 <body>
-  <!-- Two canvases: one for static stars, one for animated blood moon -->
-  <canvas id="stars"></canvas>
-  <canvas id="moon"></canvas>
-
-  <div class="tooltip" id="tooltip"></div>
-  <div class="counter" id="counter"></div>
+  <h1>Dream Under the Stars</h1>
+  <div class="moon"></div>
 
   <script>
-    const starCanvas = document.getElementById('stars');
-    const starCtx = starCanvas.getContext('2d');
-    const moonCanvas = document.getElementById('moon');
-    const moonCtx = moonCanvas.getContext('2d');
-    const tooltip = document.getElementById("tooltip");
-
-    starCanvas.width = moonCanvas.width = window.innerWidth;
-    starCanvas.height = moonCanvas.height = window.innerHeight;
-
-    // Messages
     const messages = [
-      "You are my universe ",
-      "Every night since the blood moon I have fallen deeper and deeper for you",
-      "You are the prettiest girl in the world",
-      "I see forever with you under the stars",
-      "I love you with my whole heart",
-      "Every day I fall harder"
+      "You are my universe ✨",
+      "Every night since the blood moon I have fallen deeper and deeper for you ❤️",
+      "You are the prettiest girl in the world 🌹",
+      "I see forever with you under the stars 🌌",
+      "The stars aligned the day I met you 💫",
+      "I love you with my whole heart 💖",
+      "Every day I fall harder 🥰"
     ];
 
-    // Shuffle messages
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-    const shuffledMessages = shuffle([...messages]);
-
-    // Stars
-    const stars = [];
-    for (let i = 0; i < shuffledMessages.length; i++) {
-      stars.push({
-        x: Math.random() * starCanvas.width,
-        y: Math.random() * starCanvas.height,
-        radius: Math.random() * 3 + 2,
-        message: shuffledMessages[i]
-      });
+    function createStar() {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.left = Math.random() * window.innerWidth + "px";
+      star.style.top = Math.random() * window.innerHeight + "px";
+      star.style.animationDuration = (15 + Math.random() * 15) + "s"; 
+      
+      // --- MODIFICATION HERE ---
+      // Get a random message from the array
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      // Set the message as a data-attribute
+      star.setAttribute("data-message", randomMessage);
+      // -------------------------
+      
+      document.body.appendChild(star);
     }
 
-    // Draw stars
-    function drawStars() {
-      starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-      for (let star of stars) {
-        starCtx.beginPath();
-        starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        starCtx.fillStyle = "white";
-        starCtx.shadowBlur = 10;
-        starCtx.shadowColor = "white";
-        starCtx.fill();
-      }
+    // create many stars
+    for (let i = 0; i < 80; i++) {
+      createStar();
     }
-    drawStars();
-
-    // Moon animation
-    let moonX = -150;
-    let moonY = moonCanvas.height / 3;
-    const moonRadius = 120;
-    const moonSpeed = 0.3;
-    let glowPulse = 0;
-
-    function drawMoon() {
-      moonCtx.clearRect(0, 0, moonCanvas.width, moonCanvas.height);
-
-      glowPulse += 0.05;
-      let pulse = Math.sin(glowPulse) * 40 + 100;
-
-      const gradient = moonCtx.createRadialGradient(moonX, moonY, 10, moonX, moonY, moonRadius);
-      gradient.addColorStop(0, "#ff4d4d");
-      gradient.addColorStop(1, "#330000");
-
-      moonCtx.beginPath();
-      moonCtx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
-      moonCtx.fillStyle = gradient;
-      moonCtx.shadowColor = "red";
-      moonCtx.shadowBlur = pulse;
-      moonCtx.fill();
-      moonCtx.closePath();
-
-      moonX += moonSpeed;
-      if (moonX - moonRadius > moonCanvas.width) {
-        moonX = -moonRadius;
-      }
-
-      requestAnimationFrame(drawMoon);
-    }
-    drawMoon();
-
-    // Hover tooltips for stars
-    starCanvas.addEventListener("mousemove", (e) => {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-      let found = false;
-
-      for (let star of stars) {
-        const dx = mouseX - star.x;
-        const dy = mouseY - star.y;
-        if (Math.sqrt(dx*dx + dy*dy) < star.radius + 6) {
-          tooltip.textContent = star.message;
-          tooltip.style.left = (mouseX + 15) + "px";
-          tooltip.style.top = (mouseY - 10) + "px";
-          tooltip.style.opacity = 1;
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        tooltip.style.opacity = 0;
-      }
-    });
-
-    // Counter
-    function updateCounter() {
-      const startDate = new Date("2025-09-07");
-      const today = new Date();
-      const diffTime = Math.abs(today - startDate);
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      document.getElementById("counter").textContent = 
-        `🌙 Since 7th September 2025: ${diffDays} days together ❤️`;
-    }
-    updateCounter();
-
-    // Resize handling
-    window.addEventListener("resize", () => {
-      starCanvas.width = moonCanvas.width = window.innerWidth;
-      starCanvas.height = moonCanvas.height = window.innerHeight;
-      drawStars();
-    });
   </script>
 </body>
 </html>
